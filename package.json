@@ -20,5 +20,8 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/DamonOehlman/nature-of-buffers/issues"
+  },
+  "dependencies": {
+    "buffers": "~0.1.1"
   }
 }
