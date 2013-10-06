@@ -74,11 +74,10 @@ console.log(c);
 
 ### Can I create a logical grouped buffer?
 
-Yes, using the [buffers](https://github.com/substack/buffers) module you
-can. 
+Yes, using the [bl](https://github.com/rvagg/bl) module you can. 
 
 ```js
-var buffers = require('buffers');
+var buffers = require('bl');
 
 // create our test buffers
 var a = new Buffer([0x00, 0x01, 0x02, 0x03]);
@@ -100,7 +99,7 @@ console.log(b);
 // => <Buffer 04 05 06 07>
 
 console.log(c);
-// => { buffers: [ <Buffer 00 01 02 03>, <Buffer 04 05 06 07> ], length: 8 }
+// => { _bufs: [ <Buffer 00 01 02 03>, <Buffer 04 05 06 07> ], ... }
 
 console.log(d);
 // => <Buffer 01 02 03>
@@ -121,6 +120,13 @@ console.log(e);
 // => <Buffer 03 04 05 06>
 ```
 
-It is, however, important to note that the behaviour of slice within the 
-`buffers` module is different to that of the native Buffer slice (as shown
-by the console log of d and e after updating a).
+#### References vs Copies when slicing
+
+As outlined in the `bl` module docs for the
+[slice method](https://github.com/rvagg/bl#blslice-start--end--), slice
+will return a reference to the original buffer if the slice operation 
+remains within the boundary of the original buffer.  If, however, it crosses
+a buffer boundary then a copy operation will need to occur.
+
+For an example of this compare the console output of `d` and `e` after 
+modifying the original buffer `a`.

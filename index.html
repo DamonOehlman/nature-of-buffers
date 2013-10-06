@@ -78,9 +78,8 @@ ourselves.</p>
 </pre></div>
 
 <h3>Can I create a logical grouped buffer?</h3>
-<p>Yes, using the <a href="https://github.com/substack/buffers">buffers</a> module you
-can. </p>
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">buffers</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;buffers&#39;</span><span class="p">);</span>
+<p>Yes, using the <a href="https://github.com/rvagg/bl">bl</a> module you can. </p>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">buffers</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bl&#39;</span><span class="p">);</span>
 
 <span class="c1">// create our test buffers</span>
 <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Buffer</span><span class="p">([</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x03</span><span class="p">]);</span>
@@ -102,7 +101,7 @@ can. </p>
 <span class="c1">// =&gt; &lt;Buffer 04 05 06 07&gt;</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
-<span class="c1">// =&gt; { buffers: [ &lt;Buffer 00 01 02 03&gt;, &lt;Buffer 04 05 06 07&gt; ], length: 8 }</span>
+<span class="c1">// =&gt; { _bufs: [ &lt;Buffer 00 01 02 03&gt;, &lt;Buffer 04 05 06 07&gt; ], ... }</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">d</span><span class="p">);</span>
 <span class="c1">// =&gt; &lt;Buffer 01 02 03&gt;</span>
@@ -123,12 +122,17 @@ can. </p>
 <span class="c1">// =&gt; &lt;Buffer 03 04 05 06&gt;</span>
 </pre></div>
 
-<p>It is, however, important to note that the behaviour of slice within the 
-<code>buffers</code> module is different to that of the native Buffer slice (as shown
-by the console log of d and e after updating a).</p>
+<h4>References vs Copies when slicing</h4>
+<p>As outlined in the <code>bl</code> module docs for the
+<a href="https://github.com/rvagg/bl#blslice-start--end--">slice method</a>, slice
+will return a reference to the original buffer if the slice operation 
+remains within the boundary of the original buffer.  If, however, it crosses
+a buffer boundary then a copy operation will need to occur.</p>
+<p>For an example of this compare the console output of <code>d</code> and <code>e</code> after 
+modifying the original buffer <code>a</code>.</p>
 </div>
 <script src="//code.jquery.com/jquery.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<!-- 1381030063516 -->
+<!-- 1381030519718 -->
 </body>
 </html>
