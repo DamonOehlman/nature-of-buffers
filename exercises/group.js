@@ -1,4 +1,4 @@
-var buffers = require('buffers');
+var buffers = require('bl');
 
 // create our test buffers
 var a = new Buffer([0x00, 0x01, 0x02, 0x03]);
@@ -20,7 +20,7 @@ console.log(b);
 // => <Buffer 04 05 06 07>
 
 console.log(c);
-// => { buffers: [ <Buffer 00 01 02 03>, <Buffer 04 05 06 07> ], length: 8 }
+// => { _bufs: [ <Buffer 00 01 02 03>, <Buffer 04 05 06 07> ], ... }
 
 console.log(d);
 // => <Buffer 01 02 03>

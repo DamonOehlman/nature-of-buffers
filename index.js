@@ -38,12 +38,19 @@
 
   ### Can I create a logical grouped buffer?
 
-  Yes, using the [buffers](https://github.com/substack/buffers) module you
-  can. 
+  Yes, using the [bl](https://github.com/rvagg/bl) module you can. 
 
   <<< exercises/group.js
 
-  It is, however, important to note that the behaviour of slice within the 
-  `buffers` module is different to that of the native Buffer slice (as shown
-  by the console log of d and e after updating a).
+  #### References vs Copies when slicing
+
+  As outlined in the `bl` module docs for the
+  [slice method](https://github.com/rvagg/bl#blslice-start--end--), slice
+  will return a reference to the original buffer if the slice operation 
+  remains within the boundary of the original buffer.  If, however, it crosses
+  a buffer boundary then a copy operation will need to occur.
+
+  For an example of this compare the console output of `d` and `e` after 
+  modifying the original buffer `a`.
+  
 **/
