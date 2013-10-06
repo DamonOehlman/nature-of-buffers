@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Article</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Bootstrap -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css" />
+<style type="text/css">
+body {
+  margin: 10px;
+}
+</style>
+</head>
+<body>
+<div role="content"><h1>The Nature of NodeJS Buffers</h1>
+<p>This is a simple journey that explores the nature of the NodeJS
+<a href="http://nodejs.org/api/buffer.html">Buffer</a>.  After reading the docs there
+are a still a few things that remain a mystery around buffers.</p>
+<p>For instance:</p>
+<ul>
+<li>Which operations create new copies of existing buffers, vs which ops
+create buffers that reference the original memory.  The documentation is
+pretty clear when it comes to
+<a href="http://nodejs.org/api/buffer.html#buffer_buf_slice_start_end">slice</a>
+but not so clear with other methods.</li>
+</ul>
+<p>Through experimentation and examples we will explore the core node
+buffers (and some useful additional modules from userland).</p>
+<h2>Exercises</h2>
+<p>The following exercises have been created organically as I have had
+questions that needed answering.  Apologies for them not being in any
+order that makes sense...</p>
+<h3>Does <code>Buffer.slice</code> work on a reference?</h3>
+<p>While the documentation is pretty clear about this, let&#39;s check for
+ourselves.</p>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Buffer</span><span class="p">([</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x03</span><span class="p">]);</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 00 01 02 03&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 01 02&gt;</span>
+
+<span class="c1">// update the contents of a</span>
+<span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 00 ff 02 03&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+<span class="c1">// =&gt; ?</span>
+</pre></div>
+
+<h3>Does <code>Buffer.concat</code> create a copy?</h3>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Buffer</span><span class="p">([</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x03</span><span class="p">]);</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Buffer</span><span class="p">([</span><span class="mh">0x04</span><span class="p">,</span> <span class="mh">0x05</span><span class="p">,</span> <span class="mh">0x06</span><span class="p">,</span> <span class="mh">0x07</span><span class="p">]);</span>
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">]);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 00 01 02 03&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 04 05 06 07&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 00 01 02 03 04 05 06 07&gt;</span>
+
+<span class="c1">// update the contents of a</span>
+<span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x10</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 10 01 02 03&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+<span class="c1">// =&gt; ?</span>
+</pre></div>
+
+</div>
+<script src="//code.jquery.com/jquery.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<!-- 1381029220018 -->
+</body>
+</html>

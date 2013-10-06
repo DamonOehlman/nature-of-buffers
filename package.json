@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gendocs": "gendocs > README.md"
+    "gendocs": "gendocs > README.md && blockdown ~/article.html < README.md > index.html"
   },
   "repository": {
     "type": "git",
