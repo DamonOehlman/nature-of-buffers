@@ -114,7 +114,7 @@ console.log(a);
 // => <Buffer 00 01 02 ff>
 
 console.log(d);
-// => <Buffer 01 02 03>
+// => <Buffer 01 02 ff>
 
 console.log(e);
 // => <Buffer 03 04 05 06>
