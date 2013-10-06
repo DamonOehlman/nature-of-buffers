@@ -77,9 +77,58 @@ ourselves.</p>
 <span class="c1">// =&gt; ?</span>
 </pre></div>
 
+<h3>Can I create a logical grouped buffer?</h3>
+<p>Yes, using the <a href="https://github.com/substack/buffers">buffers</a> module you
+can. </p>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">buffers</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;buffers&#39;</span><span class="p">);</span>
+
+<span class="c1">// create our test buffers</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Buffer</span><span class="p">([</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x03</span><span class="p">]);</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Buffer</span><span class="p">([</span><span class="mh">0x04</span><span class="p">,</span> <span class="mh">0x05</span><span class="p">,</span> <span class="mh">0x06</span><span class="p">,</span> <span class="mh">0x07</span><span class="p">]);</span>
+
+<span class="c1">// group a + b in logical group c</span>
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">buffers</span><span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">]);</span>
+
+<span class="c1">// slice within the first buffer boundary</span>
+<span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+
+<span class="c1">// slice across the boundary</span>
+<span class="kd">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 00 01 02 03&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 04 05 06 07&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+<span class="c1">// =&gt; { buffers: [ &lt;Buffer 00 01 02 03&gt;, &lt;Buffer 04 05 06 07&gt; ], length: 8 }</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">d</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 01 02 03&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 03 04 05 06&gt;</span>
+
+<span class="c1">// update a</span>
+<span class="nx">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 00 01 02 ff&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">d</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 01 02 03&gt;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="c1">// =&gt; &lt;Buffer 03 04 05 06&gt;</span>
+</pre></div>
+
+<p>It is, however, important to note that the behaviour of slice within the 
+<code>buffers</code> module is different to that of the native Buffer slice (as shown
+by the console log of d and e after updating a).</p>
 </div>
 <script src="//code.jquery.com/jquery.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<!-- 1381029220018 -->
+<!-- 1381030063516 -->
 </body>
 </html>

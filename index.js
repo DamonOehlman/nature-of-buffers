@@ -35,5 +35,15 @@
   ### Does `Buffer.concat` create a copy?
 
   <<< exercises/concat.js
-  
+
+  ### Can I create a logical grouped buffer?
+
+  Yes, using the [buffers](https://github.com/substack/buffers) module you
+  can. 
+
+  <<< exercises/group.js
+
+  It is, however, important to note that the behaviour of slice within the 
+  `buffers` module is different to that of the native Buffer slice (as shown
+  by the console log of d and e after updating a).
 **/
