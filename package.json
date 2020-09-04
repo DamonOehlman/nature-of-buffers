@@ -22,6 +22,6 @@
     "url": "https://github.com/DamonOehlman/nature-of-buffers/issues"
   },
   "dependencies": {
-    "bl": "~0.4.2"
+    "bl": "~1.2.3"
   }
 }
